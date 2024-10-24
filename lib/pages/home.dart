@@ -98,16 +98,27 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            String? newTask = await showDialog<String>(
+            List<String>? newTask = await showDialog<List<String>>(
               context: context,
               builder: (BuildContext context) {
                 TextEditingController taskController = TextEditingController();
+                TextEditingController companyController = TextEditingController();
+
                 return AlertDialog(
                   title: Text("Добавить новую задачу"),
-                  content: TextField(
-                    controller: taskController,
-                    decoration: InputDecoration(hintText: "Введите задачу"),
+                  content: Column(
+                    children: [
+                      TextField(
+                        controller: taskController,
+                        decoration: InputDecoration(hintText: "Введите задачу"),
+                      ),
+                      TextField(
+                        controller: companyController,
+                        decoration: InputDecoration(hintText: "Введите компанию"),
+                      ),
+                    ],
                   ),
+
                   actions: <Widget>[
                     TextButton(
                       child: Text("Отмена"),
@@ -118,7 +129,9 @@ class _HomeState extends State<Home> {
                     TextButton(
                       child: Text("Добавить"),
                       onPressed: () {
-                        Navigator.of(context).pop(taskController.text);  // Возврат введённого текста
+                        Navigator.of(context).pop([taskController.text, companyController.text]);
+
+                        // Возврат введённого текста
                       },
                     ),
                   ],
@@ -126,10 +139,10 @@ class _HomeState extends State<Home> {
               },
             );
 
-            if (newTask != null && newTask.isNotEmpty) {
+            if (newTask != null && newTask.length == 2) {
               setState(() {
-                lines.add(newTask);  // Добавляем новую задачу в список
-                companies.add("Новая компания");  // Или любые сопутствующие данные
+                lines.add(newTask[0]);  // Добавляем задачу в список
+                companies.add(newTask[1]);  // Добавляем компанию в список
               });
             }
           }
